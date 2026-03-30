@@ -1,7 +1,7 @@
 import java.util.*;
 import java.util.stream.Collectors;
 
-// ================= Bogie Class =================
+// ================= Bogie =================
 class Bogie {
     String name;
     int capacity;
@@ -21,69 +21,27 @@ public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
 
-        // ================= UC1 =================
         System.out.println("=== Train Consist Management App ===");
 
-        List<String> trainConsist = new ArrayList<>();
-        System.out.println("Train consist initialized.");
-        System.out.println("Initial number of bogies: " + trainConsist.size());
+        // ================= UC10 Example =================
+        List<Bogie> bogies = List.of(
+                new Bogie("Sleeper", 72),
+                new Bogie("AC Chair", 56),
+                new Bogie("First Class", 24),
+                new Bogie("Sleeper", 70)
+        );
 
-        // ================= UC2 =================
-        System.out.println("\n--- UC2 ---");
-        trainConsist.add("Sleeper");
-        trainConsist.add("AC Chair");
-        trainConsist.add("First Class");
-        trainConsist.remove("AC Chair");
-
-        // ================= UC3 =================
-        System.out.println("\n--- UC3 ---");
-        Set<String> ids = new HashSet<>(Arrays.asList("BG1","BG2","BG1"));
-        System.out.println(ids);
-
-        // ================= UC4 =================
-        System.out.println("\n--- UC4 ---");
-        LinkedList<String> list = new LinkedList<>(Arrays.asList("Engine","Sleeper","Cargo"));
-        list.add(1,"Pantry");
-
-        // ================= UC5 =================
-        System.out.println("\n--- UC5 ---");
-        Set<String> formation = new LinkedHashSet<>(Arrays.asList("Engine","Sleeper","Sleeper"));
-        System.out.println(formation);
-
-        // ================= UC6 =================
-        System.out.println("\n--- UC6 ---");
-        Map<String,Integer> map = Map.of("Sleeper",72,"AC",50,"First",24);
-        map.forEach((k,v)-> System.out.println(k+" -> "+v));
-
-        // ================= UC7 =================
-        System.out.println("\n--- UC7 ---");
-        List<Bogie> bogies = new ArrayList<>(List.of(
-                new Bogie("Sleeper",72),
-                new Bogie("AC Chair",56),
-                new Bogie("First Class",24),
-                new Bogie("General",90)
-        ));
-
-        bogies.sort(Comparator.comparingInt(b -> b.capacity));
-        bogies.forEach(System.out::println);
-
-        // ================= UC8 =================
-        System.out.println("\n--- UC8 ---");
-        List<Bogie> filtered = filterBogiesByCapacity(bogies,60);
-        filtered.forEach(System.out::println);
-
-        // ================= UC9 =================
-        System.out.println("\n--- UC9 ---");
-        Map<String,List<Bogie>> grouped = groupBogiesByType(bogies);
-        grouped.forEach((k,v)->{
-            System.out.println(k);
-            v.forEach(b-> System.out.println("  "+b.capacity));
-        });
-
-        // ================= UC10 =================
-        System.out.println("\n--- UC10 ---");
         int total = calculateTotalCapacity(bogies);
-        System.out.println("Total Capacity: " + total);
+        System.out.println("\nTotal Capacity: " + total);
+
+        // ================= UC11 =================
+        System.out.println("\n--- UC11 Validation ---");
+
+        String trainId = "TRN-6524";
+        String cargoCode = "PET-FH";
+
+        System.out.println("Train ID Valid: " + isValidTrainID(trainId));
+        System.out.println("Cargo Code Valid: " + isValidCargoCode(cargoCode));
     }
 
     // ================= UC8 =================
@@ -104,5 +62,14 @@ public class TrainConsistManagementApp {
         return bogies.stream()
                 .map(b -> b.capacity)
                 .reduce(0, Integer::sum);
+    }
+
+    // ================= UC11 =================
+    public static boolean isValidTrainID(String trainId) {
+        return java.util.regex.Pattern.matches("TRN-\\d{4}", trainId);
+    }
+
+    public static boolean isValidCargoCode(String cargoCode) {
+        return java.util.regex.Pattern.matches("PET-[A-Z]{2}", cargoCode);
     }
 }
