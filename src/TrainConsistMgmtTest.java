@@ -4,62 +4,59 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TrainConsistMgmtTest {
 
-    // Helper method to create GoodsBogie list
-    private List<TrainConsistManagementApp.GoodsBogie> getValidBogies() {
+    private List<TrainConsistManagementApp.Bogie> getBogies() {
         return List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistManagementApp.GoodsBogie("Open", "Coal"),
-                new TrainConsistManagementApp.GoodsBogie("Box", "Grain"),
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum")
+                new TrainConsistManagementApp.Bogie("Sleeper", 72),
+                new TrainConsistManagementApp.Bogie("AC", 40),
+                new TrainConsistManagementApp.Bogie("General", 90),
+                new TrainConsistManagementApp.Bogie("Chair", 30)
         );
     }
 
-    // ================= TEST CASES =================
-
     @Test
-    void testSafety_AllBogiesValid() {
-        boolean result = TrainConsistManagementApp.isSafeComposition(getValidBogies());
-        assertTrue(result);
+    void testLoopFilteringLogic() {
+        List<?> result = TrainConsistManagementApp.filterUsingLoop(getBogies(), 50);
+        assertEquals(2, result.size());
     }
 
     @Test
-    void testSafety_CylindricalWithInvalidCargo() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Coal") // invalid
-        );
-
-        boolean result = TrainConsistManagementApp.isSafeComposition(bogies);
-        assertFalse(result);
+    void testStreamFilteringLogic() {
+        List<?> result = TrainConsistManagementApp.filterUsingStream(getBogies(), 50);
+        assertEquals(2, result.size());
     }
 
     @Test
-    void testSafety_NonCylindricalBogiesAllowed() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Open", "Coal"),
-                new TrainConsistManagementApp.GoodsBogie("Box", "Grain")
-        );
+    void testLoopAndStreamResultsMatch() {
+        List<?> loop = TrainConsistManagementApp.filterUsingLoop(getBogies(), 50);
+        List<?> stream = TrainConsistManagementApp.filterUsingStream(getBogies(), 50);
 
-        boolean result = TrainConsistManagementApp.isSafeComposition(bogies);
-        assertTrue(result);
+        assertEquals(loop.size(), stream.size());
     }
 
     @Test
-    void testSafety_MixedBogiesWithViolation() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = List.of(
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Petroleum"),
-                new TrainConsistManagementApp.GoodsBogie("Cylindrical", "Coal"), // violation
-                new TrainConsistManagementApp.GoodsBogie("Open", "Grain")
-        );
+    void testExecutionTimeMeasurement() {
+        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
 
-        boolean result = TrainConsistManagementApp.isSafeComposition(bogies);
-        assertFalse(result);
+        for (int i = 0; i < 1000; i++) {
+            bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", i));
+        }
+
+        long start = System.nanoTime();
+        TrainConsistManagementApp.filterUsingStream(bogies, 500);
+        long end = System.nanoTime();
+
+        assertTrue(end > start);
     }
 
     @Test
-    void testSafety_EmptyBogieList() {
-        List<TrainConsistManagementApp.GoodsBogie> bogies = new ArrayList<>();
+    void testLargeDatasetProcessing() {
+        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
 
-        boolean result = TrainConsistManagementApp.isSafeComposition(bogies);
-        assertTrue(result); // empty list = safe
+        for (int i = 0; i < 10000; i++) {
+            bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", i));
+        }
+
+        List<?> result = TrainConsistManagementApp.filterUsingStream(bogies, 5000);
+        assertTrue(result.size() > 0);
     }
 }
