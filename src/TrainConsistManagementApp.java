@@ -1,5 +1,23 @@
 import java.util.*;
 
+// Custom Bogie Class (UC7)
+class Bogie {
+    String name;
+    int capacity;
+
+    // Constructor
+    Bogie(String name, int capacity) {
+        this.name = name;
+        this.capacity = capacity;
+    }
+
+    // toString() for clean output
+    @Override
+    public String toString() {
+        return name + " -> Capacity: " + capacity;
+    }
+}
+
 public class TrainConsistManagementApp {
 
     public static void main(String[] args) {
@@ -73,17 +91,45 @@ public class TrainConsistManagementApp {
 
         Map<String, Integer> bogieCapacity = new HashMap<>();
 
-        // Insert bogie capacities
         bogieCapacity.put("Sleeper", 72);
         bogieCapacity.put("AC Chair", 50);
         bogieCapacity.put("First Class", 24);
 
-        // Iterate using entrySet
         System.out.println("Bogie Capacity Details:");
         for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
             System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
         }
 
-        System.out.println("System ready for further operations.");
+        // UC7: Sort Bogies by Capacity (Comparator)
+        System.out.println("\n--- UC7: Sort Passenger Bogies by Capacity ---");
+
+        List<Bogie> passengerBogies = new ArrayList<>();
+
+        passengerBogies.add(new Bogie("Sleeper", 72));
+        passengerBogies.add(new Bogie("AC Chair", 50));
+        passengerBogies.add(new Bogie("First Class", 24));
+
+        System.out.println("Before Sorting:");
+        for (Bogie b : passengerBogies) {
+            System.out.println(b);
+        }
+
+        // Ascending order
+        passengerBogies.sort(Comparator.comparingInt(b -> b.capacity));
+
+        System.out.println("\nAfter Sorting (Ascending):");
+        for (Bogie b : passengerBogies) {
+            System.out.println(b);
+        }
+
+        // Descending order
+        passengerBogies.sort(Comparator.comparingInt((Bogie b) -> b.capacity).reversed());
+
+        System.out.println("\nAfter Sorting (Descending):");
+        for (Bogie b : passengerBogies) {
+            System.out.println(b);
+        }
+
+        System.out.println("\nSystem ready for further operations.");
     }
 }
