@@ -113,10 +113,45 @@ public class TrainConsistManagementApp {
         System.out.println(Arrays.toString(bogieNames));
 
         System.out.println("\nUC17 sorting completed...");
+
+        // ===== UC18 EXECUTION =====
+        System.out.println("\n=========================================");
+        System.out.println(" UC18 - Linear Search for Bogie ID ");
+        System.out.println("=========================================\n");
+
+        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+        String searchId = "BG309";
+
+        System.out.println("Available Bogie IDs:");
+        for (String id : bogieIds) {
+            System.out.println(id);
+        }
+
+// Call search
+        boolean found = searchBogieById(bogieIds, searchId);
+
+        if (found) {
+            System.out.println("\nBogie " + searchId + " found in train consist.");
+        } else {
+            System.out.println("\nBogie " + searchId + " NOT found in train consist.");
+        }
+
+        System.out.println("\nUC18 search completed...");
     }
 
     // ===== UC17: Sort Bogie Names using Arrays.sort() =====
     public static void sortBogieNames(String[] bogieNames) {
         Arrays.sort(bogieNames);
+    }
+    // ===== UC18: Linear Search for Bogie ID =====
+    public static boolean searchBogieById(String[] bogieIds, String searchId) {
+
+        for (String id : bogieIds) {
+            if (id.equals(searchId)) {
+                return true; // Found → early termination
+            }
+        }
+
+        return false; // Not found
     }
 }
