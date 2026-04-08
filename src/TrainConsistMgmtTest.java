@@ -4,62 +4,47 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TrainConsistMgmtTest {
 
     @Test
-    void testException_ValidCapacityCreation() throws TrainConsistManagementApp.InvalidCapacityException {
-        TrainConsistManagementApp.PassengerBogie b =
-                new TrainConsistManagementApp.PassengerBogie("Sleeper", 72);
+    void testSort_BasicSorting() {
+        int[] arr = {72, 56, 24, 70, 60};
 
-        assertEquals("Sleeper", b.type);
-        assertEquals(72, b.capacity);
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 60, 70, 72}, arr);
     }
 
     @Test
-    void testException_NegativeCapacityThrowsException() {
-        Exception exception = assertThrows(
-                TrainConsistManagementApp.InvalidCapacityException.class,
-                () -> new TrainConsistManagementApp.PassengerBogie("Sleeper", -10)
-        );
+    void testSort_AlreadySortedArray() {
+        int[] arr = {24, 56, 60, 70, 72};
 
-        assertEquals("Capacity must be greater than zero", exception.getMessage());
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 60, 70, 72}, arr);
     }
 
     @Test
-    void testException_ZeroCapacityThrowsException() {
-        Exception exception = assertThrows(
-                TrainConsistManagementApp.InvalidCapacityException.class,
-                () -> new TrainConsistManagementApp.PassengerBogie("AC", 0)
-        );
+    void testSort_DuplicateValues() {
+        int[] arr = {72, 56, 56, 24};
 
-        assertEquals("Capacity must be greater than zero", exception.getMessage());
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 56, 72}, arr);
     }
 
     @Test
-    void testException_ExceptionMessageValidation() {
-        Exception exception = assertThrows(
-                TrainConsistManagementApp.InvalidCapacityException.class,
-                () -> new TrainConsistManagementApp.PassengerBogie("First", 0)
-        );
+    void testSort_SingleElementArray() {
+        int[] arr = {50};
 
-        assertTrue(exception.getMessage().contains("greater than zero"));
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{50}, arr);
     }
 
     @Test
-    void testException_ObjectIntegrityAfterCreation() throws TrainConsistManagementApp.InvalidCapacityException {
-        TrainConsistManagementApp.PassengerBogie b =
-                new TrainConsistManagementApp.PassengerBogie("AC Chair", 56);
+    void testSort_AllEqualValues() {
+        int[] arr = {40, 40, 40};
 
-        assertEquals("AC Chair", b.type);
-        assertEquals(56, b.capacity);
-    }
+        TrainConsistManagementApp.bubbleSort(arr);
 
-    @Test
-    void testException_MultipleValidBogiesCreation() throws TrainConsistManagementApp.InvalidCapacityException {
-        TrainConsistManagementApp.PassengerBogie b1 =
-                new TrainConsistManagementApp.PassengerBogie("Sleeper", 72);
-
-        TrainConsistManagementApp.PassengerBogie b2 =
-                new TrainConsistManagementApp.PassengerBogie("AC", 50);
-
-        assertNotNull(b1);
-        assertNotNull(b2);
+        assertArrayEquals(new int[]{40, 40, 40}, arr);
     }
 }
