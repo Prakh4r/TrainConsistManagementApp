@@ -126,27 +126,51 @@ public class TrainConsistManagementApp {
 //        for (String id : bogieIds) {
 //            System.out.println(id);
 //        }
-        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String key = "BG309";
+//        String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+//        String key = "BG309";
+//
+//// Ensure sorted before display (matches output)
+//        Arrays.sort(bogieIds);
+//
+//        System.out.println("Sorted Bogie IDs:");
+//        for (String id : bogieIds) {
+//            System.out.println(id);
+//        }
+//
+//// Call binary search
+//        boolean found = binarySearchBogieId(bogieIds, key);
+//
+//        if (found) {
+//            System.out.println("\nBogie " + key + " found using Binary Search.");
+//        } else {
+//            System.out.println("\nBogie " + key + " NOT found.");
+//        }
+//
+//        System.out.println("\nUC19 search completed...");
+//
+//        // ===== UC20 EXECUTION =====
+//        System.out.println("\n=========================================");
+//        System.out.println(" UC20 - Exception Handling During Search ");
+//        System.out.println("=========================================\n");
 
-// Ensure sorted before display (matches output)
-        Arrays.sort(bogieIds);
+// Empty array scenario
+        String[] bogieIds = {};
+        String searchId = "BG101";
 
-        System.out.println("Sorted Bogie IDs:");
-        for (String id : bogieIds) {
-            System.out.println(id);
+        try {
+            boolean found = safeSearchBogie(bogieIds, searchId);
+
+            if (found) {
+                System.out.println("Bogie " + searchId + " found.");
+            } else {
+                System.out.println("Bogie " + searchId + " NOT found.");
+            }
+
+        } catch (IllegalStateException e) {
+            System.out.println("Exception: " + e.getMessage());
         }
 
-// Call binary search
-        boolean found = binarySearchBogieId(bogieIds, key);
-
-        if (found) {
-            System.out.println("\nBogie " + key + " found using Binary Search.");
-        } else {
-            System.out.println("\nBogie " + key + " NOT found.");
-        }
-
-        System.out.println("\nUC19 search completed...");
+        System.out.println("\nUC20 execution completed...");
     }
 
     // ===== UC17: Sort Bogie Names using Arrays.sort() =====
@@ -193,5 +217,22 @@ public class TrainConsistManagementApp {
         }
 
         return false; // Not found
+    }
+    // ===== UC20: Exception Handling During Search =====
+    public static boolean safeSearchBogie(String[] bogieIds, String searchId) {
+
+        // ---- FAIL-FAST VALIDATION ----
+        if (bogieIds == null || bogieIds.length == 0) {
+            throw new IllegalStateException("No bogies available in train. Cannot perform search.");
+        }
+
+        // ---- SEARCH LOGIC (Linear Search) ----
+        for (String id : bogieIds) {
+            if (id.equals(searchId)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }
