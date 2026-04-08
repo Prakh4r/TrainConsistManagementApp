@@ -1,62 +1,50 @@
 import org.junit.jupiter.api.Test;
-import java.util.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrainConsistMgmtTest {
 
-    private List<TrainConsistManagementApp.Bogie> getBogies() {
-        return List.of(
-                new TrainConsistManagementApp.Bogie("Sleeper", 72),
-                new TrainConsistManagementApp.Bogie("AC", 40),
-                new TrainConsistManagementApp.Bogie("General", 90),
-                new TrainConsistManagementApp.Bogie("Chair", 30)
-        );
+    @Test
+    void testSort_BasicSorting() {
+        int[] arr = {72, 56, 24, 70, 60};
+
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 60, 70, 72}, arr);
     }
 
     @Test
-    void testLoopFilteringLogic() {
-        List<?> result = TrainConsistManagementApp.filterUsingLoop(getBogies(), 50);
-        assertEquals(2, result.size());
+    void testSort_AlreadySortedArray() {
+        int[] arr = {24, 56, 60, 70, 72};
+
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 60, 70, 72}, arr);
     }
 
     @Test
-    void testStreamFilteringLogic() {
-        List<?> result = TrainConsistManagementApp.filterUsingStream(getBogies(), 50);
-        assertEquals(2, result.size());
+    void testSort_DuplicateValues() {
+        int[] arr = {72, 56, 56, 24};
+
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{24, 56, 56, 72}, arr);
     }
 
     @Test
-    void testLoopAndStreamResultsMatch() {
-        List<?> loop = TrainConsistManagementApp.filterUsingLoop(getBogies(), 50);
-        List<?> stream = TrainConsistManagementApp.filterUsingStream(getBogies(), 50);
+    void testSort_SingleElementArray() {
+        int[] arr = {50};
 
-        assertEquals(loop.size(), stream.size());
+        TrainConsistManagementApp.bubbleSort(arr);
+
+        assertArrayEquals(new int[]{50}, arr);
     }
 
     @Test
-    void testExecutionTimeMeasurement() {
-        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
+    void testSort_AllEqualValues() {
+        int[] arr = {40, 40, 40};
 
-        for (int i = 0; i < 1000; i++) {
-            bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", i));
-        }
+        TrainConsistManagementApp.bubbleSort(arr);
 
-        long start = System.nanoTime();
-        TrainConsistManagementApp.filterUsingStream(bogies, 500);
-        long end = System.nanoTime();
-
-        assertTrue(end > start);
-    }
-
-    @Test
-    void testLargeDatasetProcessing() {
-        List<TrainConsistManagementApp.Bogie> bogies = new ArrayList<>();
-
-        for (int i = 0; i < 10000; i++) {
-            bogies.add(new TrainConsistManagementApp.Bogie("Sleeper", i));
-        }
-
-        List<?> result = TrainConsistManagementApp.filterUsingStream(bogies, 5000);
-        assertTrue(result.size() > 0);
+        assertArrayEquals(new int[]{40, 40, 40}, arr);
     }
 }
