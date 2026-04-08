@@ -96,5 +96,27 @@ public class TrainConsistManagementApp {
         }
 
         System.out.println("\n\nUC16 sorting completed...");
+        // ===== UC17 EXECUTION =====
+        System.out.println("\n=========================================");
+        System.out.println(" UC17 - Sorting Bogie Names using Arrays.sort() ");
+        System.out.println("=========================================\n");
+
+        String[] bogieNames = {"Sleeper", "AC Chair", "First Class", "General", "Luxury"};
+
+        System.out.println("Original Bogie Names:");
+        System.out.println(Arrays.toString(bogieNames));
+
+// Sorting using built-in method
+        sortBogieNames(bogieNames);
+
+        System.out.println("\nSorted Bogie Names (Alphabetical):");
+        System.out.println(Arrays.toString(bogieNames));
+
+        System.out.println("\nUC17 sorting completed...");
+    }
+
+    // ===== UC17: Sort Bogie Names using Arrays.sort() =====
+    public static void sortBogieNames(String[] bogieNames) {
+        Arrays.sort(bogieNames);
     }
 }
