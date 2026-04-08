@@ -119,24 +119,34 @@ public class TrainConsistManagementApp {
         System.out.println(" UC18 - Linear Search for Bogie ID ");
         System.out.println("=========================================\n");
 
+//        //String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
+//        String searchId = "BG309";
+//
+//        System.out.println("Available Bogie IDs:");
+//        for (String id : bogieIds) {
+//            System.out.println(id);
+//        }
         String[] bogieIds = {"BG101", "BG205", "BG309", "BG412", "BG550"};
-        String searchId = "BG309";
+        String key = "BG309";
 
-        System.out.println("Available Bogie IDs:");
+// Ensure sorted before display (matches output)
+        Arrays.sort(bogieIds);
+
+        System.out.println("Sorted Bogie IDs:");
         for (String id : bogieIds) {
             System.out.println(id);
         }
 
-// Call search
-        boolean found = searchBogieById(bogieIds, searchId);
+// Call binary search
+        boolean found = binarySearchBogieId(bogieIds, key);
 
         if (found) {
-            System.out.println("\nBogie " + searchId + " found in train consist.");
+            System.out.println("\nBogie " + key + " found using Binary Search.");
         } else {
-            System.out.println("\nBogie " + searchId + " NOT found in train consist.");
+            System.out.println("\nBogie " + key + " NOT found.");
         }
 
-        System.out.println("\nUC18 search completed...");
+        System.out.println("\nUC19 search completed...");
     }
 
     // ===== UC17: Sort Bogie Names using Arrays.sort() =====
@@ -149,6 +159,36 @@ public class TrainConsistManagementApp {
         for (String id : bogieIds) {
             if (id.equals(searchId)) {
                 return true; // Found → early termination
+            }
+        }
+
+        return false; // Not found
+    }
+    // ===== UC19: Binary Search for Bogie ID =====
+    public static boolean binarySearchBogieId(String[] bogieIds, String key) {
+
+        // Handle empty array
+        if (bogieIds == null || bogieIds.length == 0) {
+            return false;
+        }
+
+        // Ensure array is sorted (important precondition)
+        Arrays.sort(bogieIds);
+
+        int low = 0;
+        int high = bogieIds.length - 1;
+
+        while (low <= high) {
+            int mid = low + (high - low) / 2;
+
+            int comparison = bogieIds[mid].compareTo(key);
+
+            if (comparison == 0) {
+                return true; // Found
+            } else if (comparison < 0) {
+                low = mid + 1; // Search right half
+            } else {
+                high = mid - 1; // Search left half
             }
         }
 
