@@ -1,135 +1,127 @@
 import java.util.*;
 
-// Custom Bogie Class (UC7)
-class Bogie {
-    String name;
-    int capacity;
-
-    // Constructor
-    Bogie(String name, int capacity) {
-        this.name = name;
-        this.capacity = capacity;
-    }
-
-    // toString() for clean output
-    @Override
-    public String toString() {
-        return name + " -> Capacity: " + capacity;
-    }
-}
-
 public class TrainConsistManagementApp {
+
+    // ===== CUSTOM EXCEPTIONS =====
+    static class InvalidCapacityException extends Exception {
+        public InvalidCapacityException(String message) {
+            super(message);
+        }
+    }
+
+    static class UnsafeCargoException extends Exception {
+        public UnsafeCargoException(String message) {
+            super(message);
+        }
+    }
+
+    // ===== Passenger Bogie =====
+    static class PassengerBogie {
+        String type;
+        int capacity;
+
+        PassengerBogie(String type, int capacity) throws InvalidCapacityException {
+            if (capacity <= 0) {
+                throw new InvalidCapacityException("Capacity must be greater than zero");
+            }
+            this.type = type;
+            this.capacity = capacity;
+        }
+
+        @Override
+        public String toString() {
+            return type + " -> Capacity: " + capacity;
+        }
+    }
+
+    // ===== Goods Bogie =====
+    static class GoodsBogie {
+        String shape;   // Rectangular / Cylindrical
+        String cargo;   // Assigned later
+
+        GoodsBogie(String shape) {
+            this.shape = shape;
+        }
+
+        // Runtime cargo assignment
+        public void assignCargo(String cargo) throws UnsafeCargoException {
+            // Unsafe rule:
+            // Petroleum should NOT go into Rectangular bogie
+            if (shape.equalsIgnoreCase("Rectangular") &&
+                    cargo.equalsIgnoreCase("Petroleum")) {
+
+                throw new UnsafeCargoException(
+                        "Unsafe Cargo! Petroleum cannot be loaded in Rectangular Bogie"
+                );
+            }
+
+            this.cargo = cargo;
+        }
+
+        @Override
+        public String toString() {
+            return shape + " -> Cargo: " + (cargo == null ? "Not Assigned" : cargo);
+        }
+    }
 
     public static void main(String[] args) {
 
-        // UC1: Initialization
-        System.out.println("=== Train Consist Management App ===");
+        System.out.println("=========================================");
+        System.out.println(" UC15 - Safe Cargo Assignment ");
+        System.out.println("=========================================\n");
 
-        List<String> trainConsist = new ArrayList<>();
-        System.out.println("Train consist initialized.");
-        System.out.println("Initial number of bogies: " + trainConsist.size());
+        List<PassengerBogie> passengerBogies = new ArrayList<>();
+        List<GoodsBogie> goodsBogies = new ArrayList<>();
 
-        // UC2: ArrayList Operations
-        System.out.println("\n--- UC2: Managing Passenger Bogies ---");
+        // ===== UC14 Logic (Constructor Validation) =====
+        try {
+            passengerBogies.add(new PassengerBogie("Sleeper", 72));
+            passengerBogies.add(new PassengerBogie("AC Chair", 56));
 
-        trainConsist.add("Sleeper");
-        trainConsist.add("AC Chair");
-        trainConsist.add("First Class");
+            // Invalid example
+            passengerBogies.add(new PassengerBogie("First Class", 0));
 
-        System.out.println("Bogies after addition: " + trainConsist);
-
-        trainConsist.remove("AC Chair");
-        System.out.println("After removing 'AC Chair': " + trainConsist);
-
-        if (trainConsist.contains("Sleeper")) {
-            System.out.println("Sleeper bogie exists in the train.");
+        } catch (InvalidCapacityException e) {
+            System.out.println("Exception Caught (Capacity): " + e.getMessage());
         }
 
-        System.out.println("Final train consist: " + trainConsist);
+        // ===== Create Goods Bogies =====
+        GoodsBogie g1 = new GoodsBogie("Rectangular");
+        GoodsBogie g2 = new GoodsBogie("Cylindrical");
 
-        // UC3: HashSet (Uniqueness)
-        System.out.println("\n--- UC3: Ensuring Unique Bogie IDs ---");
+        goodsBogies.add(g1);
+        goodsBogies.add(g2);
 
-        Set<String> bogieIds = new HashSet<>();
-        bogieIds.add("BG101");
-        bogieIds.add("BG102");
-        bogieIds.add("BG103");
-        bogieIds.add("BG101"); // duplicate
+        // ===== UC15 Logic (Runtime Safety Handling) =====
+        for (GoodsBogie g : goodsBogies) {
+            try {
+                if (g.shape.equals("Rectangular")) {
+                    g.assignCargo("Petroleum"); // Unsafe
+                } else {
+                    g.assignCargo("Water"); // Safe
+                }
 
-        System.out.println("Unique Bogie IDs: " + bogieIds);
+                System.out.println("Cargo assigned successfully.");
 
-        // UC4: LinkedList (Order)
-        System.out.println("\n--- UC4: Maintaining Ordered Train Consist ---");
+            } catch (UnsafeCargoException e) {
+                System.out.println("Exception Caught (Cargo): " + e.getMessage());
 
-        LinkedList<String> linkedTrain = new LinkedList<>();
-        linkedTrain.add("Engine");
-        linkedTrain.add("Sleeper");
-        linkedTrain.add("AC");
-        linkedTrain.add("Cargo");
-        linkedTrain.add("Guard");
-
-        linkedTrain.add(2, "Pantry Car");
-        linkedTrain.removeFirst();
-        linkedTrain.removeLast();
-
-        System.out.println("Final ordered train consist: " + linkedTrain);
-
-        // UC5: LinkedHashSet (Order + Uniqueness)
-        System.out.println("\n--- UC5: Ordered Unique Train Formation ---");
-
-        Set<String> formation = new LinkedHashSet<>();
-        formation.add("Engine");
-        formation.add("Sleeper");
-        formation.add("Cargo");
-        formation.add("Guard");
-        formation.add("Sleeper"); // duplicate ignored
-
-        System.out.println("Final train formation: " + formation);
-
-        // UC6: HashMap (Bogie → Capacity)
-        System.out.println("\n--- UC6: Bogie Capacity Mapping ---");
-
-        Map<String, Integer> bogieCapacity = new HashMap<>();
-
-        bogieCapacity.put("Sleeper", 72);
-        bogieCapacity.put("AC Chair", 50);
-        bogieCapacity.put("First Class", 24);
-
-        System.out.println("Bogie Capacity Details:");
-        for (Map.Entry<String, Integer> entry : bogieCapacity.entrySet()) {
-            System.out.println(entry.getKey() + " -> Capacity: " + entry.getValue());
+            } finally {
+                System.out.println("Finalizing cargo assignment for: " + g.shape);
+            }
         }
 
-        // UC7: Sort Bogies by Capacity (Comparator)
-        System.out.println("\n--- UC7: Sort Passenger Bogies by Capacity ---");
-
-        List<Bogie> passengerBogies = new ArrayList<>();
-
-        passengerBogies.add(new Bogie("Sleeper", 72));
-        passengerBogies.add(new Bogie("AC Chair", 50));
-        passengerBogies.add(new Bogie("First Class", 24));
-
-        System.out.println("Before Sorting:");
-        for (Bogie b : passengerBogies) {
+        // ===== Display Results =====
+        System.out.println("\nPassenger Bogies:");
+        for (PassengerBogie b : passengerBogies) {
             System.out.println(b);
         }
 
-        // Ascending order
-        passengerBogies.sort(Comparator.comparingInt(b -> b.capacity));
-
-        System.out.println("\nAfter Sorting (Ascending):");
-        for (Bogie b : passengerBogies) {
-            System.out.println(b);
+        System.out.println("\nGoods Bogies:");
+        for (GoodsBogie g : goodsBogies) {
+            System.out.println(g);
         }
 
-        // Descending order
-        passengerBogies.sort(Comparator.comparingInt((Bogie b) -> b.capacity).reversed());
-
-        System.out.println("\nAfter Sorting (Descending):");
-        for (Bogie b : passengerBogies) {
-            System.out.println(b);
-        }
-
-        System.out.println("\nSystem ready for further operations.");
+        System.out.println("\nUC15 execution completed...");
     }
 }
